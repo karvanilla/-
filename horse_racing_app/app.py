@@ -16,7 +16,12 @@ register_error_handlers(app)
 @app.route('/')
 def index():
     competitions = Competition.query.all()
-    return render_template('index.html', competitions=competitions)
+    jockeys_count = Jockey.query.count()
+    horses_count = Horse.query.count()
+    return render_template('index.html', 
+                          competitions=competitions, 
+                          jockeys_count=jockeys_count, 
+                          horses_count=horses_count)
 
 @app.route('/add_competition', methods=['GET', 'POST'])
 def add_competition():
@@ -136,6 +141,7 @@ def horse_competitions(horse_id):
     horse = Horse.query.get_or_404(horse_id)
     results = Result.query.filter_by(horse_id=horse_id).all()
     return render_template('horse_competitions.html', horse=horse, results=results)
+
 @app.route('/jockeys')
 def jockeys_list():
     jockeys = Jockey.query.all()
@@ -145,16 +151,6 @@ def jockeys_list():
 def horses_list():
     horses = Horse.query.all()
     return render_template('horses_list.html', horses=horses)
+
 if __name__ == '__main__':
     app.run(debug=True)
-
-
-@app.route('/')
-def index():
-    competitions = Competition.query.all()
-    jockeys_count = Jockey.query.count()
-    horses_count = Horse.query.count()
-    return render_template('index.html', 
-                          competitions=competitions, 
-                          jockeys_count=jockeys_count, 
-                          horses_count=horses_count)
